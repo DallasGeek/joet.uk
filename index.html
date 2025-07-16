@@ -15,11 +15,21 @@
 <body>
   <h1>hello, nosey</h1>
   <p>what ya looking for?</p>
-  <div id="weather-widget" style="font-family: Arial, sans-serif; background: #f0f8ff; padding: 15px; border-radius: 8px; width: 300px;">
+  <p style="margin-bottom: 30px;">First line or element</p>
+<div id="weather-widget" style="font-family: Arial, sans-serif; background: #f0f8ff; padding: 15px; border-radius: 8px; width: 320px;">
   <h3 style="margin-top: 0;">🌡️ Temperature Comparison</h3>
-  <p>Dallas, TX: <strong><span id="dallas-temp">...</span>°C</strong></p>
-  <p>Cambridge, UK: <strong><span id="cambridge-temp">...</span>°C</strong></p>
-  <p>Difference: <strong><span id="temp-diff">...</span>°C</strong></p>
+  <p>Dallas, TX: 
+    <strong><span id="dallas-temp-c">...</span>°C</strong> / 
+    <strong><span id="dallas-temp-f">...</span>°F</strong>
+  </p>
+  <p>Cambridge, UK: 
+    <strong><span id="cambridge-temp-c">...</span>°C</strong> / 
+    <strong><span id="cambridge-temp-f">...</span>°F</strong>
+  </p>
+  <p>Difference: 
+    <strong><span id="temp-diff-c">...</span>°C</strong> / 
+    <strong><span id="temp-diff-f">...</span>°F</strong>
+  </p>
   <p style="font-size: 0.8em; color: #555;">(Updates on page load)</p>
 </div>
 
