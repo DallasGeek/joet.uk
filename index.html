@@ -15,5 +15,42 @@
 <body>
   <h1>hello, nosey</h1>
   <p>what ya looking for?</p>
+  <div id="weather-widget" style="font-family: Arial, sans-serif; background: #f0f8ff; padding: 15px; border-radius: 8px; width: 300px;">
+  <h3 style="margin-top: 0;">🌡️ Temperature Comparison</h3>
+  <p>Dallas, TX: <strong><span id="dallas-temp">...</span>°C</strong></p>
+  <p>Cambridge, UK: <strong><span id="cambridge-temp">...</span>°C</strong></p>
+  <p>Difference: <strong><span id="temp-diff">...</span>°C</strong></p>
+  <p style="font-size: 0.8em; color: #555;">(Updates on page load)</p>
+</div>
+
+<script>
+  const apiKey = 'e24ff34aad05e3dffde053dcc765a612'; // <-- Replace with your OpenWeatherMap API key
+
+  async function fetchTemp(city, countryCode) {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&units=metric&appid=${apiKey}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    return data.main.temp;
+  }
+
+  async function updateTemps() {
+    try {
+      const dallasTemp = await fetchTemp('Dallas', 'US');
+      const cambridgeTemp = await fetchTemp('Cambridge', 'GB');
+
+      document.getElementById('dallas-temp').textContent = dallasTemp.toFixed(1);
+      document.getElementById('cambridge-temp').textContent = cambridgeTemp.toFixed(1);
+
+      const diff = Math.abs(dallasTemp - cambridgeTemp);
+      document.getElementById('temp-diff').textContent = diff.toFixed(1);
+    } catch (err) {
+      console.error('Error fetching weather:', err);
+      document.getElementById('weather-widget').textContent = '⚠️ Could not load weather data.';
+    }
+  }
+
+  updateTemps();
+</script>
 </body>
 </html>
