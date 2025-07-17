@@ -40,7 +40,54 @@
   </p>
   <p style="font-size: 0.8em; color: #555;">(Updates on page load)</p>
 </div>
+<script>
+  const apiKey = 'YOUR_API_KEY_HERE'; // Replace with your key
 
+  function cToF(c) {
+    return (c * 9 / 5) + 32;
+  }
+
+  function safeSet(id, value) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.textContent = value;
+    } else {
+      console.warn('Missing element:', id);
+    }
+  }
+
+  async function fetchTemp(city, countryCode) {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&units=metric&appid=${apiKey}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('API error');
+    const data = await response.json();
+    return data.main.temp;
+  }
+
+  async function updateTemps() {
+    try {
+      const dallasTempC = await fetchTemp('Dallas', 'US');
+      const cambridgeTempC = await fetchTemp('Cambridge', 'GB');
+      const dallasTempF = cToF(dallasTempC);
+      const cambridgeTempF = cToF(cambridgeTempC);
+      const diffC = Math.abs(dallasTempC - cambridgeTempC);
+      const diffF = Math.abs(dallasTempF - cambridgeTempF);
+
+      safeSet('dallas-temp-c', dallasTempC.toFixed(1));
+      safeSet('dallas-temp-f', dallasTempF.toFixed(1));
+      safeSet('cambridge-temp-c', cambridgeTempC.toFixed(1));
+      safeSet('cambridge-temp-f', cambridgeTempF.toFixed(1));
+      safeSet('temp-diff-c', diffC.toFixed(1));
+      safeSet('temp-diff-f', diffF.toFixed(1));
+    } catch (err) {
+      console.error('Error fetching weather:', err);
+      const widget = document.getElementById('weather-widget');
+      if (widget) widget.innerHTML = '<p>⚠️ Could not load weather data.</p>';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', updateTemps);
+</script>
 <script>
   const apiKey = 'e24ff34aad05e3dffde053dcc765a612';
 
