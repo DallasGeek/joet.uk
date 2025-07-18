@@ -68,7 +68,7 @@
       <div><strong>Who is warmer?</strong></div>
       <div>Dallas, TX: <span id="dallasC">--</span>°C / <span id="dallasF">--</span>°F</div>
       <div>Cambridge, UK: <span id="cambridgeC">--</span>°C / <span id="cambridgeF">--</span>°F</div>
-      <div>Difference: <span id="diffC">--</span>°C / <span id="diffF">--</span>°F</div>
+      <div id="diffText">Difference: --</div>
       <div class="small">(Updates on page load)</div>
     </div>
   </div>
@@ -107,15 +107,25 @@
 
         const dallasTempF = cToF(dallasTempC);
         const cambridgeTempF = cToF(cambridgeTempC);
-        const diffC = Math.abs(dallasTempC - cambridgeTempC);
-        const diffF = diffC * 9 / 5;
 
         safeSet('dallasC', dallasTempC.toFixed(1));
         safeSet('dallasF', dallasTempF.toFixed(1));
         safeSet('cambridgeC', cambridgeTempC.toFixed(1));
         safeSet('cambridgeF', cambridgeTempF.toFixed(1));
-        safeSet('diffC', diffC.toFixed(1));
-        safeSet('diffF', diffF.toFixed(1));
+
+        const diffC = Math.abs(dallasTempC - cambridgeTempC);
+        const diffF = diffC * 9 / 5;
+
+        let diffText = '';
+        if (dallasTempC > cambridgeTempC) {
+          diffText = `Dallas is ${diffC.toFixed(1)}°C / ${diffF.toFixed(1)}°F warmer`;
+        } else if (cambridgeTempC > dallasTempC) {
+          diffText = `Cambridge is ${diffC.toFixed(1)}°C / ${diffF.toFixed(1)}°F warmer`;
+        } else {
+          diffText = `Both cities are the same temperature`;
+        }
+
+        safeSet('diffText', diffText);
 
         console.log('Temperatures updated on page.');
       } catch (err) {
