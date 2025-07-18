@@ -74,38 +74,52 @@
   </div>
 
   <script>
-    const apiKey = 'ad731f8cabc8ec45a3f25d319fcde1f5';
+  const apiKey = 'e24ff34aad05e3dffde053dcc765a612';
 
-    async function getTemp(city) {
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`);
-      const data = await response.json();
-      return data.main.temp;
+  function cToF(c) {
+    return (c * 9 / 5) + 32;
+  }
+
+  function safeSet(id, value) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.textContent = value;
+    } else {
+      console.warn('Missing element:', id);
     }
+  }
 
-    function toF(c) {
-      return (c * 9/5 + 32).toFixed(1);
+  async function fetchTemp(city, countryCode) {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&units=metric&appid=${apiKey}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('API error');
+    const data = await response.json();
+    return data.main.temp;
+  }
+
+  async function updateTemps() {
+    try {
+      const dallasTempC = await fetchTemp('Dallas', 'US');
+      const cambridgeTempC = await fetchTemp('Cambridge', 'GB');
+      const dallasTempF = cToF(dallasTempC);
+      const cambridgeTempF = cToF(cambridgeTempC);
+      const diffC = Math.abs(dallasTempC - cambridgeTempC);
+      const diffF = diffC * 9 / 5; // ✅ Correct difference conversion
+
+      safeSet('dallas-temp-c', dallasTempC.toFixed(1));
+      safeSet('dallas-temp-f', dallasTempF.toFixed(1));
+      safeSet('cambridge-temp-c', cambridgeTempC.toFixed(1));
+      safeSet('cambridge-temp-f', cambridgeTempF.toFixed(1));
+      safeSet('temp-diff-c', diffC.toFixed(1));
+      safeSet('temp-diff-f', diffF.toFixed(1));
+    } catch (err) {
+      console.error('Error fetching weather:', err);
+      const widget = document.getElementById('weather-widget');
+      if (widget) widget.innerHTML = '<p>⚠️ Could not load weather data.</p>';
     }
+  }
 
-    async function updateTemps() {
-      try {
-        const dallasTemp = await getTemp('Dallas,US');
-        const cambridgeTemp = await getTemp('Cambridge,GB');
-
-        const diffC = Math.abs(dallasTempC - cambridgeTempC);
-        const diffF = diffC * 9 / 5;
-
-        document.getElementById('dallasC').textContent = dallasTemp.toFixed(1);
-        document.getElementById('dallasF').textContent = toF(dallasTemp);
-        document.getElementById('cambridgeC').textContent = cambridgeTemp.toFixed(1);
-        document.getElementById('cambridgeF').textContent = toF(cambridgeTemp);
-        document.getElementById('diffC').textContent = diffC;
-        document.getElementById('diffF').textContent = diffF;
-      } catch (err) {
-        console.error("Error fetching weather:", err);
-      }
-    }
-
-    updateTemps();
-  </script>
+  document.addEventListener('DOMContentLoaded', updateTemps);
+</script>
 </body>
 </html>
