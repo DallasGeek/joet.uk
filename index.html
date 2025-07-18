@@ -91,8 +91,8 @@
         const dallasTemp = await getTemp('Dallas,US');
         const cambridgeTemp = await getTemp('Cambridge,GB');
 
-        const diffC = (dallasTemp - cambridgeTemp).toFixed(1);
-        const diffF = toF(diffC);
+        const diffC = Math.abs(dallasTempC - cambridgeTempC);
+        const diffF = diffC * 9 / 5;
 
         document.getElementById('dallasC').textContent = dallasTemp.toFixed(1);
         document.getElementById('dallasF').textContent = toF(dallasTemp);
