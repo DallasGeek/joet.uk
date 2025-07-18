@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>joe t</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>joet.uk</title>
   <style>
     body {
-      font-family: Helvetica, Arial, sans-serif;
-      background: #f5f5f5;
       margin: 0;
+      font-family: Helvetica, Arial, sans-serif;
+      background-color: #f2f2f2;
+      color: #111;
     }
 
     #container {
@@ -16,37 +17,42 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 5rem 1rem;
       min-height: 100vh;
+      padding: 5rem 1rem;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.2em;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-top: 0;
+      margin-bottom: 2rem;
     }
 
     #weather-widget {
-      font-family: Arial, sans-serif;
-      background: #f0f8ff;
-      padding: 15px;
-      border-radius: 8px;
-      width: 320px;
-      max-width: 100%;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      background-color: #e6f2ff;
+      padding: 20px;
+      border-radius: 10px;
       text-align: center;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-sizing: border-box;
     }
 
-    @media (max-width: 500px) {
-      #container {
-        padding: 2rem 1rem;
-      }
+    .temp-label {
+      font-weight: bold;
+    }
 
-      h1 {
-        font-size: 1.5rem;
-      }
-
-      h3 {
-        font-size: 1.2rem;
-      }
-
-      p {
-        font-size: 1rem;
-      }
+    .small {
+      font-size: 0.8rem;
+      color: #555;
+      margin-top: 0.5rem;
     }
   </style>
 </head>
@@ -56,70 +62,47 @@
     <p>what ya looking for?</p>
 
     <div id="weather-widget">
-      <h3 style="margin-top: 0;">🌡️ Temperature Comparison</h3>
-      <p>Dallas, TX:
-        <strong><span id="dallas-temp-c">...</span>°C</strong> /
-        <strong><span id="dallas-temp-f">...</span>°F</strong>
-      </p>
-      <p>Cambridge, UK:
-        <strong><span id="cambridge-temp-c">...</span>°C</strong> /
-        <strong><span id="cambridge-temp-f">...</span>°F</strong>
-      </p>
-      <p>Difference:
-        <strong><span id="temp-diff-c">...</span>°C</strong> /
-        <strong><span id="temp-diff-f">...</span>°F</strong>
-      </p>
-      <p style="font-size: 0.8em; color: #555;">(Updates on page load)</p>
+      <div><strong>🌡️ Temperature Comparison</strong></div>
+      <div>Dallas, TX: <span id="dallasC">--</span>°C / <span id="dallasF">--</span>°F</div>
+      <div>Cambridge, UK: <span id="cambridgeC">--</span>°C / <span id="cambridgeF">--</span>°F</div>
+      <div>Difference: <span id="diffC">--</span>°C / <span id="diffF">--</span>°F</span></div>
+      <div class="small">(Updates on page load)</div>
     </div>
   </div>
 
   <script>
-    const apiKey = 'e24ff34aad05e3dffde053dcc765a612';
+    const apiKey = 'ad731f8cabc8ec45a3f25d319fcde1f5';
 
-    function cToF(c) {
-      return (c * 9 / 5) + 32;
-    }
-
-    function safeSet(id, value) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.textContent = value;
-      } else {
-        console.warn('Missing element:', id);
-      }
-    }
-
-    async function fetchTemp(city, countryCode) {
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&units=metric&appid=${apiKey}`;
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('API error');
+    async function getTemp(city) {
+      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`);
       const data = await response.json();
       return data.main.temp;
     }
 
+    function toF(c) {
+      return (c * 9/5 + 32).toFixed(1);
+    }
+
     async function updateTemps() {
       try {
-        const dallasTempC = await fetchTemp('Dallas', 'US');
-        const cambridgeTempC = await fetchTemp('Cambridge', 'GB');
-        const dallasTempF = cToF(dallasTempC);
-        const cambridgeTempF = cToF(cambridgeTempC);
-        const diffC = Math.abs(dallasTempC - cambridgeTempC);
-        const diffF = Math.abs(dallasTempF - cambridgeTempF);
+        const dallasTemp = await getTemp('Dallas,US');
+        const cambridgeTemp = await getTemp('Cambridge,GB');
 
-        safeSet('dallas-temp-c', dallasTempC.toFixed(1));
-        safeSet('dallas-temp-f', dallasTempF.toFixed(1));
-        safeSet('cambridge-temp-c', cambridgeTempC.toFixed(1));
-        safeSet('cambridge-temp-f', cambridgeTempF.toFixed(1));
-        safeSet('temp-diff-c', diffC.toFixed(1));
-        safeSet('temp-diff-f', diffF.toFixed(1));
+        const diffC = (dallasTemp - cambridgeTemp).toFixed(1);
+        const diffF = toF(diffC);
+
+        document.getElementById('dallasC').textContent = dallasTemp.toFixed(1);
+        document.getElementById('dallasF').textContent = toF(dallasTemp);
+        document.getElementById('cambridgeC').textContent = cambridgeTemp.toFixed(1);
+        document.getElementById('cambridgeF').textContent = toF(cambridgeTemp);
+        document.getElementById('diffC').textContent = diffC;
+        document.getElementById('diffF').textContent = diffF;
       } catch (err) {
-        console.error('Error fetching weather:', err);
-        const widget = document.getElementById('weather-widget');
-        if (widget) widget.innerHTML = '<p>⚠️ Could not load weather data.</p>';
+        console.error("Error fetching weather:", err);
       }
     }
 
-    document.addEventListener('DOMContentLoaded', updateTemps);
+    updateTemps();
   </script>
 </body>
 </html>
