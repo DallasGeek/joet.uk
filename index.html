@@ -99,8 +99,12 @@
 
     async function updateTemps() {
       try {
+        console.log('Starting temperature fetch...');
         const dallasTempC = await fetchTemp('Dallas', 'US');
+        console.log('Dallas Temp:', dallasTempC);
         const cambridgeTempC = await fetchTemp('Cambridge', 'GB');
+        console.log('Cambridge Temp:', cambridgeTempC);
+
         const dallasTempF = cToF(dallasTempC);
         const cambridgeTempF = cToF(cambridgeTempC);
         const diffC = Math.abs(dallasTempC - cambridgeTempC);
@@ -112,6 +116,8 @@
         safeSet('cambridgeF', cambridgeTempF.toFixed(1));
         safeSet('diffC', diffC.toFixed(1));
         safeSet('diffF', diffF.toFixed(1));
+
+        console.log('Temperatures updated on page.');
       } catch (err) {
         console.error('Error fetching weather:', err);
         const widget = document.getElementById('weather-widget');
