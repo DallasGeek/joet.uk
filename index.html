@@ -63,8 +63,14 @@
     }
     #friend-code-box strong {
       display: block;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.3rem;
       font-size: 1.1rem;
+    }
+    #copy-hint {
+      display: block;
+      font-size: 0.75rem;
+      color: #888;
+      margin-bottom: 0.6rem;
     }
     #copy-button {
       font-family: 'Courier New', monospace;
@@ -86,6 +92,22 @@
     #copy-button:active {
       transform: translateY(0);
     }
+    #instagram-badge {
+      margin-top: 1.5rem;
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    #instagram-badge:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
   </style>
 </head>
 <body>
@@ -103,8 +125,13 @@
     <div id="friend-code-box">
       <span style="font-size: 1.5rem;">🎮</span>
       <strong>Nintendo Switch Friend Code</strong>
+      <small id="copy-hint">Click to copy</small>
       <button id="copy-button" onclick="copyFriendCode()">SW-3843-4137-9214</button>
     </div>
+    
+    <a href="https://instagram.com/importedlens" target="_blank" id="instagram-badge">
+      📸 Follow me @importedlens
+    </a>
   </div>
   <script>
     const apiKey = 'e24ff34aad05e3dffde053dcc765a612';
