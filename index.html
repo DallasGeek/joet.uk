@@ -103,12 +103,12 @@ button.temp:focus-visible { outline: 2px solid var(--ink); outline-offset: 6px; 
   nav a { transition: none; }
 }
 
-/* Stack on small screens */
+/* Small screens: keep the two halves side by side, temps at the bottom */
 @media (max-width: 640px) {
-  .halves { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
-  .half, .half.right { align-items: flex-end; justify-content: flex-start; text-align: left; }
-  .half.right { align-items: flex-end; }
-  h1 { font-size: clamp(4rem, 24vw, 7rem); }
+  .half { padding: 20px 18px calc(28px + env(safe-area-inset-bottom, 0px)); }
+  h1 { font-size: clamp(4rem, 22vw, 7rem); }
+  button.temp { font-size: clamp(2rem, 11vw, 3rem); }
+  .city, .clock { font-size: .85rem; }
 }
 </style>
 </head>
